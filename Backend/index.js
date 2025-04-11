@@ -5,6 +5,7 @@ import cors from "cors";                     // CORS (Cross-Origin Resource Shar
 import cookieParser from "cookie-parser";    // Parses cookies attached to the client request object
 import connectDB from "./utils/db.js";
 import userRoute from "./routes/userRoutes.js"
+import companyRoute from "./routes/companyRoutes.js";
 // Create an instance of an Express application
 const app = express();
 
@@ -39,6 +40,7 @@ app.use(cors(corsOption));
 
 //API Route
 app.use('/api/v1/user',userRoute);
+app.use("/api/v1/company",companyRoute);
 
 // Start the server and listen on the defined PORT
 app.listen(PORT, () => {
