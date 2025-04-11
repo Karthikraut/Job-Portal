@@ -4,7 +4,7 @@ import dotenv from "dotenv";                 // dotenv loads environment variabl
 import cors from "cors";                     // CORS (Cross-Origin Resource Sharing) middleware to allow/disallow requests from other origins
 import cookieParser from "cookie-parser";    // Parses cookies attached to the client request object
 import connectDB from "./utils/db.js";
-
+import userRoute from "./routes/userRoutes.js"
 // Create an instance of an Express application
 const app = express();
 
@@ -36,6 +36,9 @@ const corsOption = {
 // Enable CORS using the options defined above
 app.use(cors(corsOption));
 
+
+//API Route
+app.use('/api/v1/user',userRoute);
 
 // Start the server and listen on the defined PORT
 app.listen(PORT, () => {
