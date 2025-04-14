@@ -11,7 +11,7 @@ const Navbar = () => {
         <div className='bg-white'>
             <div className='flex items-center justify-between mx-auto w-7xl h-16'>
                 <div>
-                    <h1 className='text-4xl font-bold'>Job<span className='text-[#F83002]'>Portal</span></h1>
+                    <h1 className='text-4xl font-bold'>Job<span className='text-[#F83002]'>Hunt</span></h1>
                 </div>
                 <div className='flex items-center gap-12'>
                     <ul className='flex text-2xl items-center gap-5'>

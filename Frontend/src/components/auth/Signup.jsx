@@ -8,6 +8,8 @@ import Navbar from '../shared/Navbar'
 import { USER_API_ENDPOINT } from '@/utils/constant'
 import axios from 'axios'
 import { toast } from 'sonner'
+import { useDispatch, useSelector } from 'react-redux'
+import { setLoading } from '@/redux/authSlice'
 
 const Signup = () => {
     const [input, setInput] = useState({
@@ -18,8 +20,10 @@ const Signup = () => {
         role: "student",
         file: ""
     });
+    const { loading } = useSelector((store) => store.auth);
+    const dispatch = useDispatch();
 
-    const navigate =useNavigate();
+    const navigate = useNavigate();
 
     const changeEventHandler = (e) => {
         setInput({ ...input, [e.target.name]: e.target.value });
@@ -28,10 +32,11 @@ const Signup = () => {
         setInput({ ...input, file: e.target.files?.[0] });
     }
 
-    const handleSubmit = async (e)=>{
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        dispatch(setLoading(true));
         const formData = new FormData();    //formdata object
-        
+
         formData.append("fullname", input.fullname);
         formData.append("email", input.email);
         formData.append("phoneNumber", input.phoneNumber);
@@ -41,7 +46,7 @@ const Signup = () => {
             formData.append("file", input.file);
         }
         try {
-            const result =await axios.post(`${USER_API_ENDPOINT}/register`,formData,{
+            const result = await axios.post(`${USER_API_ENDPOINT}/register`, formData, {
                 headers: { 'Content-Type': "multipart/form-data" },
                 withCredentials: true,
             });
@@ -54,6 +59,9 @@ const Signup = () => {
         } catch (error) {
             console.log(error);
             toast.error(error.response.data.message);
+        }
+        finally {
+            dispatch(setLoading(false));
         }
     }
 
@@ -166,12 +174,17 @@ const Signup = () => {
                                 />
                             </div>
 
-                            <Button 
-                                type="submit" 
-                                className="w-full h-12 text-base font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200"
-                            >
-                                Create Account
-                            </Button>
+                            {
+                                loading ? (<Button
+                                    className="w-full h-12 text-base font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200">
+                                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />Please Wait</Button>) :
+                                    (<Button
+                                        type="submit"
+                                        className="w-full h-12 text-base font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200"
+                                    >
+                                        Create Account
+                                    </Button>)
+                            }
 
                             <div className="text-center text-base text-gray-600">
                                 Already have an account?{' '}

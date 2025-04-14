@@ -8,39 +8,47 @@ import Navbar from '../shared/Navbar'
 import { toast } from 'sonner'
 import axios from 'axios'
 import { USER_API_ENDPOINT } from '@/utils/constant'
+import { useDispatch, useSelector } from 'react-redux'
+import { setLoading } from '@/redux/authSlice'
+import { Loader2 } from 'lucide-react'
 
 const Login = () => {
-    const navigate =useNavigate();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { loading } = useSelector((store) => store.auth);
     const [input, setInput] = useState({
-            email: "",
-            password: "",
-            role: "student"
-        });
-    
-        const changeEventHandler = (e) => {
-            setInput({ ...input, [e.target.name]: e.target.value });
+        email: "",
+        password: "",
+        role: "student"
+    });
+
+    const changeEventHandler = (e) => {
+        setInput({ ...input, [e.target.name]: e.target.value });
+    }
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            dispatch(setLoading(true));
+            const res = await axios.post(`${USER_API_ENDPOINT}/login`, input, {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                withCredentials: true,
+            });
+            console.log(res)
+            if (res.data.success) {
+                navigate("/");
+                toast.success(res.data.message);
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(error.response?.data?.message || "Login failed. Please try again.");
+        } finally {
+            dispatch(setLoading(false))
         }
-        
-    
-        const handleSubmit = async (e)=>{
-            e.preventDefault();
-           try {
-             const res = await axios.post(`${USER_API_ENDPOINT}/login`, input, {
-                 headers: {
-                     "Content-Type": "application/json"
-                 },
-                 withCredentials: true,
-             });
-             console.log(res)
-             if (res.data.success) {
-                 navigate("/");
-                 toast.success(res.data.message);
-             }
-           } catch (error) {
-                console.log(error);
-                toast.error(error.response?.data?.message || "Login failed. Please try again.");
-           }
-        }
+    }
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
             <Navbar />
@@ -113,12 +121,15 @@ const Login = () => {
                                 </div>
                             </div>
 
-                            <Button 
-                                type="submit" 
-                                className="w-full h-12 text-base font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200"
-                            >
-                                Sign In
-                            </Button>
+                            {loading ? (<Button
+                                className="w-full h-12 text-base font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200">
+                                <Loader2 className='mr-2 h-4 w-4 animate-spin' />Please Wait</Button>) :
+                                (<Button
+                                    type="submit"
+                                    className="w-full h-12 text-base font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200"
+                                >
+                                    Sign In
+                                </Button>)}
 
                             <div className="text-center text-base text-gray-600">
                                 Don't have an account?{' '}
