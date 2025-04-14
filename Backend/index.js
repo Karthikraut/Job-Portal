@@ -6,7 +6,8 @@ import cookieParser from "cookie-parser";    // Parses cookies attached to the c
 import connectDB from "./utils/db.js";
 import userRoute from "./routes/userRoutes.js"
 import companyRoute from "./routes/companyRoutes.js";
-import jobRoute from "./routes/jobRoutes.js"
+import jobRoute from "./routes/jobRoutes.js";
+import applcationRoute from './routes/applicationRoutes.js'
 // Create an instance of an Express application
 const app = express();
 
@@ -43,7 +44,7 @@ app.use(cors(corsOption));
 app.use('/api/v1/user',userRoute);
 app.use("/api/v1/company",companyRoute);
 app.use("/api/v1/job",jobRoute);
-
+app.use('/api/v1/application',applcationRoute)
 // Start the server and listen on the defined PORT
 app.listen(PORT, () => {
     connectDB();
