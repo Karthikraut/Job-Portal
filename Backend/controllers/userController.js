@@ -50,6 +50,8 @@ export const register = async (req,res)=>{
 
 export const login = async(req,res)=>{
     try {
+        console.log("Request Body:- ",req.body);
+
         const {email,password,role}=req.body;
         if(!email || !password || !role){
             return res.status(400).json({
@@ -65,7 +67,7 @@ export const login = async(req,res)=>{
                 success: false
             })
         }
-
+        console.log("Hello 1")
 
         const isPasswordMatched = await bcrypt.compare(password,user.password);
 
@@ -75,6 +77,7 @@ export const login = async(req,res)=>{
                 success: false
             })
         }
+        console.log("Hello 2")
 
         if(role!= user.role){
             return res.status(400).json({
@@ -83,11 +86,13 @@ export const login = async(req,res)=>{
             })
         }
 
-
         const tokenData = {
             userId: user._id
         }
-        const token = await jwt.sign(tokenData, process.env.SECRET_KEY, { expiresIn: '1d' });
+
+        // Generate JWT token synchronously
+        const token = jwt.sign(tokenData, process.env.SECRET_KEY.trim(), { expiresIn: '1d' });
+        console.log("Hello 3 - Token generated successfully");
 
         const sanitizedUser = {
             _id: user._id,
@@ -97,14 +102,29 @@ export const login = async(req,res)=>{
             role: user.role,
             profile: user.profile
         }
+        console.log("Hello 4 - User sanitized");
 
-        return res.status(200).cookie("token", token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpsOnly: true, sameSite: 'strict' }).json({
-            message: `Welcome back ${sanitizedUser.fullname}`,
-            user: sanitizedUser,
-            success: true
-        })
+        // Set cookie and send response
+        return res.status(200)
+            .cookie("token", token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "strict",
+                maxAge: 24 * 60 * 60 * 1000 // 1 day
+            })
+            .json({
+                message: `Welcome back ${sanitizedUser.fullname}`,
+                user: sanitizedUser,
+                success: true
+            });
+
     } catch (error) {
-        console.log(error)
+        console.error("Login Error:", error);
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false,
+            error: error.message
+        });
     }
 }
 
