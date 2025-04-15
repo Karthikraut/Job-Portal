@@ -137,7 +137,10 @@ export const logOut =async(req,res)=>{
 
 export const updateProfile = async(req,res)=>{
     try {
+        console.log("Request Body:- ",req.body);
         const { fullname, email, phoneNumber, bio, skills } = req.body;
+
+        const file = req.file; // file is coming from multer middleware
 
         let skillsArray;
         if(skills){

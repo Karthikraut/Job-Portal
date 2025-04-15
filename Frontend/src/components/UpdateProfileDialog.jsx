@@ -5,23 +5,21 @@ import { Input } from './ui/input'
 import { Button } from './ui/button'
 import { Textarea } from './ui/textarea'
 import { Loader2 } from 'lucide-react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import axios from 'axios'
+import { USER_API_ENDPOINT } from '@/utils/constant'
+import { toast } from 'sonner'
+import { setUser } from '@/redux/authSlice'
 
 const UpdateProfileDialog = ({ open, setOpen }) => {
     const [loading, setLoading] = useState(false);
-    const user =useSelector((store) => store.auth.user);
-    const [formData, setFormData] = useState(user);
-    console.log("FomrData",formData)
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("Form submitted:", formData);
-        setOpen(false);
-    }
+    const user = useSelector((store) => store.auth.user);
+    const [inputData, setInputData] = useState(user);
+    const dispatch =useDispatch();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
+        setInputData(prev => ({
             ...prev,
             [name]: value
         }));
@@ -30,13 +28,44 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setFormData(prev => ({
+            setInputData(prev => ({
                 ...prev,
                 resume: file
             }));
         }
     }
 
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setOpen(false);
+        const formData = new FormData();
+        formData.append("fullname", inputData.fullname);
+        formData.append("email", inputData.email);
+        formData.append("phoneNumber", inputData.phoneNumber);
+        formData.append("bio", inputData.bio);
+        formData.append("skills", inputData.skills);
+        if (inputData.file) {
+            formData.append("file", inputData.file);
+        }
+        try {
+            const res =await axios.put(`${USER_API_ENDPOINT}/profile/update`, formData, {
+                headers: { 'Content-Type': "multipart/form-data" },
+                withCredentials: true,
+            });
+            console.log(res)
+            if (res.data.success) {
+                toast.success(res.data.message);
+                dispatch(setUser(res.data.user));
+            }
+            setLoading(false);
+
+        } catch (error) {
+            console.error("Error updating profile:", error);
+
+        }
+
+    }
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent className="sm:max-w-[600px]">
@@ -50,7 +79,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                             <Input
                                 id="fullname"
                                 name="fullname"
-                                value={formData.fullname}
+                                value={inputData.fullname}
                                 onChange={handleChange}
                                 className="text-lg h-12"
                                 placeholder="Enter your full name"
@@ -63,7 +92,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                                 id="email"
                                 name="email"
                                 type="email"
-                                value={formData.email}
+                                value={inputData.email}
                                 onChange={handleChange}
                                 className="text-lg h-12"
                                 placeholder="Enter your email"
@@ -75,7 +104,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                             <Input
                                 id="phoneNumber"
                                 name="phoneNumber"
-                                value={formData.phoneNumber}
+                                value={inputData.phoneNumber}
                                 onChange={handleChange}
                                 className="text-lg h-12"
                                 placeholder="Enter your phone number"
@@ -87,7 +116,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                             <Textarea
                                 id="bio"
                                 name="bio"
-                                value={formData.bio}
+                                value={inputData.bio}
                                 onChange={handleChange}
                                 className="text-lg min-h-[100px]"
                                 placeholder="Tell us about yourself"
@@ -99,7 +128,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                             <Input
                                 id="skills"
                                 name="skills"
-                                value={formData.skills}
+                                value={inputData.skills}
                                 onChange={handleChange}
                                 className="text-lg h-12"
                                 placeholder="Enter your skills (comma separated)"
@@ -120,7 +149,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                     </div>
 
                     <DialogFooter className="flex gap-4">
-                        
+
                         {loading ? (<Button
                             className="w-full h-12 text-lg px-6 py-2  text-white rounded-md transition-colors duration-200">
                             <Loader2 className='mr-2 h-4 w-4 animate-spin' />Please Wait</Button>) :

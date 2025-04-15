@@ -4,6 +4,7 @@ dotenv.config();
 
 const isAuthenticated = async(req,res,next)=>{
     try {
+        console.log("Request Cookies:- ",req.cookies);
         const token = req.cookies.token;
         if(!token){
             return res.status(401).json({
