@@ -26,7 +26,8 @@ const Profile = () => {
         profile: {
             bio: user?.profile?.bio,
             skills: user?.profile?.skills.map((skill)=>skill) || "",
-            file: user?.profile?.file,
+            resume: user?.profile?.resume || "https://www.shutterstock.com/image-vector/circle-line-simple-design-logo-600nw-2174926871.jpg",
+            resumeOriginalName: user?.profile?.resumeOriginalName || "Resume.pdf",
         }
     }
 

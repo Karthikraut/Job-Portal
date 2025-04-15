@@ -2,6 +2,9 @@ import { User } from "../models/userModel.js";
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import dotenv from  "dotenv"
+import { get } from "http";
+import getDataUri from "../utils/datauri.js";
+import cloudinary from "../utils/cloudinary.js";
 dotenv.config();
 
 
@@ -141,6 +144,41 @@ export const updateProfile = async(req,res)=>{
         const { fullname, email, phoneNumber, bio, skills } = req.body;
 
         const file = req.file; // file is coming from multer middleware
+        
+        // Check if file exists
+        if (!file) {
+            return res.status(400).json({
+                message: "No file was uploaded",
+                success: false
+            });
+        }
+
+        console.log("File received:", file);
+
+        const dataUri = getDataUri(file); // dataur is coming from getDataUri function
+        console.log("Data URI object:", dataUri);
+        
+        if (!dataUri || !dataUri.content) {
+            console.log("Invalid dataUri:", dataUri);
+            return res.status(400).json({
+                message: "Failed to process file",
+                success: false
+            });
+        }
+
+        const cloudResponse = await cloudinary.uploader.upload(dataUri.content, {
+            resource_type: "raw",  // For PDF files
+            access_mode: "public", // Make the file publicly accessible
+            folder: "resumes"      // Optional: organize files in a folder
+        });
+        console.log("Cloudinary Response:", cloudResponse);
+        
+        if (!cloudResponse) {
+            return res.status(400).json({
+                message: "Failed to upload to Cloudinary",
+                success: false
+            });
+        }
 
         let skillsArray;
         if(skills){
@@ -163,6 +201,17 @@ export const updateProfile = async(req,res)=>{
         if(bio) user.profile.bio = bio
         if(skills) user.profile.skills = skillsArray
 
+        if(cloudResponse){
+            // Ensure the URL is properly formatted
+            const resumeUrl = cloudResponse.secure_url.startsWith('http') 
+                ? cloudResponse.secure_url 
+                : `https://${cloudResponse.secure_url}`;
+            
+            console.log("Storing resume URL:", resumeUrl);
+            user.profile.resume = resumeUrl;
+            user.profile.resumeOriginalName = file.originalname;
+        }
+
         await user.save();
 
         user = {
@@ -180,6 +229,11 @@ export const updateProfile = async(req,res)=>{
             success:true
         })
     } catch (error) {
-        
+        console.error("Error in updateProfile:", error);
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false,
+            error: error.message
+        });
     }
 }

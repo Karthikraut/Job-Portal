@@ -30,7 +30,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         if (file) {
             setInputData(prev => ({
                 ...prev,
-                resume: file
+                file: file
             }));
         }
     }
