@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Navbar from './shared/Navbar'
 import FilterCard from './FilterCard'
 import Job from './Job';
+import { Outlet } from 'react-router-dom';
 
 const jobsArray = [
     {

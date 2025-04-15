@@ -6,6 +6,7 @@ import { Contact, Mail, Pen } from 'lucide-react'
 import { Badge } from './ui/badge'
 import { Label } from './ui/label'
 import AppliedJobTable from './AppliedJobTable'
+import UpdateProfileDialog from './UpdateProfileDialog'
 // import AppliedJobTable from './AppliedJobTable'
 // import UpdateProfileDialog from './UpdateProfileDialog'
 // import useGetAppliedJobs from '@/hooks/useGetAppliedJobs'
@@ -14,6 +15,7 @@ import AppliedJobTable from './AppliedJobTable'
 const isResume = true;
 
 const Profile = () => {
+    const [open,setOpen] = React.useState(false);
     // useGetAppliedJobs();
     const userData = {
         fullname: "John Doe",
@@ -42,7 +44,7 @@ const Profile = () => {
                                 <p className='text-lg text-gray-600'>{userData.profile.bio}</p>
                             </div>
                         </div>
-                        <Button variant="outline" size="icon">
+                        <Button onClick={()=>setOpen(true)} variant="outline" size="icon">
                             <Pen className="h-5 w-5" />
                         </Button>
                     </div>
@@ -98,7 +100,7 @@ const Profile = () => {
                     <AppliedJobTable />
                 </div>
             </div>
-            {/* <UpdateProfileDialog open={open} setOpen={setOpen}/> */}
+            <UpdateProfileDialog open={open} setOpen={setOpen}/>
         </div>
     )
 }

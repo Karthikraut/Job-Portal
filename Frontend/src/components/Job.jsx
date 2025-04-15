@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from './ui/button'
 import { Bookmark } from 'lucide-react'
 import { Avatar, AvatarImage } from './ui/avatar'
@@ -14,6 +14,7 @@ const Job = ({job}) => {
         const timeDifference = currentTime - createdAt;
         return Math.floor(timeDifference/(1000*24*60*60));
     }
+    const [id] = useState(1234);
     
     return (
         <div className='p-6 rounded-xl shadow-xl bg-white border border-gray-100'>
@@ -44,7 +45,7 @@ const Job = ({job}) => {
                 <Badge className={'text-green-600 font-semibold text-base px-4 py-1'} variant="ghost">{job?.salary}LPA</Badge>
             </div>
             <div className='flex items-center gap-4 mt-5'>
-                <Button onClick={()=> navigate(`/description/${job?._id}`)} variant="outline" className="text-base">Details</Button>
+                <Button onClick={()=> navigate(`/description/${id}`)} variant="outline" className="text-base">Details</Button>
                 <Button className="bg-[#6A38C2] text-base">Save For Later</Button>
             </div>
         </div>
