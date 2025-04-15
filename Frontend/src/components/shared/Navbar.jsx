@@ -50,7 +50,7 @@ const Navbar = () => {
                                         </div>
                                         <div className='flex items-center gap-3 cursor-pointer text-lg mb-3'>
                                             <User2 className="w-5 h-5" />
-                                            <Button variant="link" className="text-lg">View Profile</Button>
+                                            <Button variant="link" className="text-lg"><Link to='/profile'>View Profile</Link></Button>
                                         </div>
                                         <div className='flex items-center gap-3 cursor-pointer text-lg'>
                                             <LogOut className="w-5 h-5" />

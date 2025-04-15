@@ -67,7 +67,6 @@ export const login = async(req,res)=>{
                 success: false
             })
         }
-        console.log("Hello 1")
 
         const isPasswordMatched = await bcrypt.compare(password,user.password);
 
@@ -77,7 +76,6 @@ export const login = async(req,res)=>{
                 success: false
             })
         }
-        console.log("Hello 2")
 
         if(role!= user.role){
             return res.status(400).json({
@@ -92,7 +90,6 @@ export const login = async(req,res)=>{
 
         // Generate JWT token synchronously
         const token = jwt.sign(tokenData, process.env.SECRET_KEY.trim(), { expiresIn: '1d' });
-        console.log("Hello 3 - Token generated successfully");
 
         const sanitizedUser = {
             _id: user._id,
@@ -102,7 +99,6 @@ export const login = async(req,res)=>{
             role: user.role,
             profile: user.profile
         }
-        console.log("Hello 4 - User sanitized");
 
         // Set cookie and send response
         return res.status(200)
