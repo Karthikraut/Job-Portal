@@ -4,7 +4,7 @@ import { Avatar, AvatarImage } from '../ui/avatar'
 import { Button } from "../ui/button";
 import { LogOut, User2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector,useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Profile from "../Profile";
 import { toast } from "sonner";
 import axios from "axios";
@@ -26,8 +26,8 @@ const Navbar = () => {
                 toast.error(res.data.message);
             }
         } catch (error) {
-            console.log(error); 
-            toast.error("Something went wrong while logging out");  
+            console.log(error);
+            toast.error("Something went wrong while logging out");
         }
     }
     return (
@@ -38,11 +38,23 @@ const Navbar = () => {
                 </div>
                 <div className='flex items-center gap-12'>
                     <ul className='flex text-xl items-center gap-8'>
-                        <li><Link to="/" className="hover:text-[#6A38C2] transition-colors">Home</Link></li>
-                        <li><Link to="/jobs" className="hover:text-[#6A38C2] transition-colors">Jobs</Link></li>
-                        <li><Link to="/browse" className="hover:text-[#6A38C2] transition-colors">Browse</Link></li>
+                        {
+                            user && user.role == "recruiter" ? (
+                                <>
+                                    <li><Link to="/admin/companies" className="hover:text-[#6A38C2] transition-colors">Companies</Link></li>
+                                    <li><Link to="/admin/jobs" className="hover:text-[#6A38C2] transition-colors" >Jobs</Link></li>
+                                </>
+                            ) : (
+                                <>
+                                    <li><Link to="/" className="hover:text-[#6A38C2] transition-colors">Home</Link></li>
+                                    <li><Link to="/jobs" className="hover:text-[#6A38C2] transition-colors">Jobs</Link></li>
+                                    <li><Link to="/browse" className="hover:text-[#6A38C2] transition-colors">Browse</Link></li>
+                                </>
+                            )
+                        }
+
                     </ul>
-                    {user==null?
+                    {user == null ?
                         (
                             <div className='flex items-center gap-4'>
                                 <Link to="/login">
