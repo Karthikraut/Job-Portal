@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Button } from './ui/button'
-import { Bookmark } from 'lucide-react'
+import { Bookmark, SpaceIcon } from 'lucide-react'
 import { Avatar, AvatarImage } from './ui/avatar'
 import { Badge } from './ui/badge'
 import { useNavigate } from 'react-router-dom'
@@ -14,7 +14,7 @@ const Job = ({job}) => {
         const timeDifference = currentTime - createdAt;
         return Math.floor(timeDifference/(1000*24*60*60));
     }
-    const [id] = useState(1234);
+
     
     return (
         <div className='p-6 rounded-xl shadow-xl bg-white border border-gray-100'>
@@ -42,10 +42,10 @@ const Job = ({job}) => {
             <div className='flex items-center gap-3 mt-5'>
                 <Badge className={'text-blue-700 font-semibold text-base px-4 py-1'} variant="ghost">{job?.position} Positions</Badge>
                 <Badge className={'text-[#6A38C2] font-semibold text-base px-4 py-1'} variant="ghost">{job?.jobType}</Badge>
-                <Badge className={'text-green-600 font-semibold text-base px-4 py-1'} variant="ghost">{job?.salary}LPA</Badge>
+                <Badge className={'text-green-600 font-semibold text-base px-4 py-1'} variant="ghost">{job?.salary}{job?.salary<100? <span>LPA</span>:<span>Rs per month</span> }</Badge>
             </div>
             <div className='flex items-center gap-4 mt-5'>
-                <Button onClick={()=> navigate(`/description/${id}`)} variant="outline" className="text-base">Details</Button>
+                <Button onClick={()=> navigate(`/description/${job?._id}`)} variant="outline" className="text-base">Details</Button>
                 <Button className="bg-[#6A38C2] text-base">Save For Later</Button>
             </div>
         </div>

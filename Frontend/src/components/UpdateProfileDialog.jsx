@@ -38,7 +38,8 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setOpen(false);
+        setLoading(true);
+        
         const formData = new FormData();
         formData.append("fullname", inputData.fullname);
         formData.append("email", inputData.email);
@@ -49,7 +50,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
             formData.append("file", inputData.file);
         }
         try {
-            const res =await axios.put(`${USER_API_ENDPOINT}/profile/update`, formData, {
+            const res = await axios.put(`${USER_API_ENDPOINT}/profile/update`, formData, {
                 headers: { 'Content-Type': "multipart/form-data" },
                 withCredentials: true,
             });
@@ -57,14 +58,14 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
             if (res.data.success) {
                 toast.success(res.data.message);
                 dispatch(setUser(res.data.user));
+                setOpen(false);
             }
-            setLoading(false);
-
         } catch (error) {
             console.error("Error updating profile:", error);
-
+            toast.error(error.response?.data?.message || "Failed to update profile");
+        } finally {
+            setLoading(false);
         }
-
     }
     return (
         <Dialog open={open} onOpenChange={setOpen}>

@@ -1,23 +1,54 @@
-import React from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
+import { APPLICATION_API_ENDPOINT, JOB_API_ENDPOINT } from '@/utils/constant';
+import { useSelector, useDispatch } from 'react-redux';
+import { setSingleJob } from '@/redux/jobSlice';
+import { toast } from 'sonner';
+
 
 const JobDescription = () => {
-  const singleJob = {
-    title: 'Frontend Developer',
-    position: '2',
-    jobType: 'Full-Time',
-    salary: '12',
-    location: 'Remote',
-    description: 'We are looking for a skilled frontend developer proficient in React.js and modern UI frameworks.',
-    experience: '2',
-    applications: [{ applicant: 'user1' }, { applicant: 'user2' }],
-    createdAt: '2025-04-01T12:00:00.000Z'
-  };
+  
+  const {user} =useSelector((store) => store.auth);
+  const {singleJob} = useSelector((store) => store.job);
+  const params = useParams();
+  const dispatch = useDispatch();
 
-  const isApplied = false;
+  useEffect(() => {
+    const fetchJob = async () => {
+      const res = await axios.get(`${JOB_API_ENDPOINT}/get/${params.id}`, { withCredentials: true });
+      dispatch(setSingleJob(res.data.job))
+      console.log(res.data.job);
+    }
+    fetchJob();
+  }, []);
+  
+  const [isApplied,setIsApplied] = useState(singleJob?.applications?.some((application)=>application.applicant === user?._id)|| false);
 
+  console.log(isApplied);
+  console.log(user);
+  console.log(singleJob?.applications);
+
+  const applyJobHandler = async () => {
+    try {
+        const res = await axios.post(`${APPLICATION_API_ENDPOINT}/apply/${params.id}`,{}, {withCredentials:true});
+        
+        if(res.data.success){
+            setIsApplied(true); // Update the local state
+            const updatedSingleJob = {...singleJob, applications:[...singleJob.applications,{applicant:user?._id}]}
+            dispatch(setSingleJob(updatedSingleJob)); // helps us to real time UI update
+            toast.success(res.data.message);
+
+        }
+    } catch (error) {
+        console.log(error);
+        toast.error(error.response.data.message);
+    }
+}
   return (
+    singleJob && (
     <div className='max-w-[80%] mx-auto my-10'>
       <div className='flex items-center justify-between'>
         <div>
@@ -25,10 +56,10 @@ const JobDescription = () => {
           <div className='flex items-center gap-6 mt-7 '>
             <Badge className={'text-blue-700 font-bold text-xl'} variant="ghost">{singleJob.position} Positions</Badge>
             <Badge className={'text-[#F83002] font-bold text-xl'} variant="ghost">{singleJob.jobType}</Badge>
-            <Badge className={'text-[#7209b7] font-bold text-xl'} variant="ghost">{singleJob.salary}LPA</Badge>
+            <Badge className={'text-[#7209b7] font-bold text-xl'} variant="ghost">{singleJob.salary}{singleJob.salary<100? <span> LPA</span>:<span> per month</span>}</Badge>
           </div>
         </div>
-        <Button
+        <Button onClick={()=>applyJobHandler()}
           disabled={isApplied}
           className={`rounded-lg text-xl ${isApplied ? 'bg-gray-600 cursor-not-allowed' : 'bg-[#7209b7] hover:bg-[#5f32ad]'}`}>
           {isApplied ? 'Already Applied' : 'Apply Now'}
@@ -46,6 +77,7 @@ const JobDescription = () => {
         <h1 className='font-bold my-1'>Posted Date: <span className='pl-4 font-normal text-gray-800'>{singleJob.createdAt.split("T")[0]}</span></h1>
       </div>
     </div>
+  )
   );
 };
 

@@ -33,12 +33,26 @@ export const register = async (req,res)=>{
         const salt = await bcrypt.genSalt(SALT_ROUND); 
         const hashedPassword = await bcrypt.hash(password, salt);
 
+        //Cloudinary will come here
+        const file =req.file;
+        const dataUri = getDataUri(file); // datauri is coming from getDataUri function
+        const cloudResponse =await cloudinary.uploader.upload(dataUri.content);
+
+        if (!cloudResponse) {
+            return res.status(400).json({
+                message: "Failed to upload to Cloudinary",
+                success: false
+            });
+        }
         await User.create({
             fullname,
             email,
             phoneNumber,
             password: hashedPassword,
-            role
+            role,
+            profile: {
+                profilePhoto: cloudResponse.secure_url, 
+            }
         });
         
         return res.status(201).json({
@@ -155,7 +169,7 @@ export const updateProfile = async(req,res)=>{
 
         console.log("File received:", file);
 
-        const dataUri = getDataUri(file); // dataur is coming from getDataUri function
+        const dataUri = getDataUri(file); // datauri is coming from getDataUri function
         console.log("Data URI object:", dataUri);
         
         if (!dataUri || !dataUri.content) {
@@ -203,10 +217,7 @@ export const updateProfile = async(req,res)=>{
 
         if(cloudResponse){
             // Ensure the URL is properly formatted
-            const resumeUrl = cloudResponse.secure_url.startsWith('http') 
-                ? cloudResponse.secure_url 
-                : `https://${cloudResponse.secure_url}`;
-            
+            const resumeUrl = cloudResponse.secure_url
             console.log("Storing resume URL:", resumeUrl);
             user.profile.resume = resumeUrl;
             user.profile.resumeOriginalName = file.originalname;

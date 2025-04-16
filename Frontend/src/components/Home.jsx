@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "./shared/Navbar.jsx";
 import HeroSection from "./HeroSection.jsx";
 import CategoryCarousel from "./CategoryCarousel.jsx";
 import LatestJobs from "./LatestJobs.jsx";
 import Footer from "./shared/Footer.jsx";
+import useGetAllJobs from "@/hooks/useGetAllJobs.jsx";
 
 const Home = () => {
+    console.log("hello world");
+    useGetAllJobs();
     return (
         <div>
             <Navbar />
