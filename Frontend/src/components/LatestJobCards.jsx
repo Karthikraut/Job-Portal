@@ -10,7 +10,7 @@ const LatestJobCards = ({job}) => {
             className='p-7 rounded-xl shadow-lg bg-white border border-gray-100 cursor-pointer hover:shadow-xl hover:border-[#6A38C2]/20 transition-all duration-300'
         >
             <div className='mb-5'>
-                <h1 className='font-semibold text-2xl text-gray-800'>{job.company.name}</h1>
+                <h1 className='font-semibold text-2xl text-gray-800'>{job.company?.name}</h1>
                 <p className='text-lg text-gray-500 mt-2'>{job.location}</p>
             </div>
             <div className='mb-5'>

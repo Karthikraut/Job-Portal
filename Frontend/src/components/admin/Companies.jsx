@@ -4,10 +4,12 @@ import Navbar from "../shared/Navbar";
 import CompaniesTable from "./CompaniesTable.jsx";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import useGetAllCompany from "@/hooks/useGetAllCompany";
 
 const Companies = () => {
   const [input, setInput] = useState("");
   const navigate = useNavigate();
+  useGetAllCompany();
 
   return (
     <div className="min-h-screen bg-gray-50">

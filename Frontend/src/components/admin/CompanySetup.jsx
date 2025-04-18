@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../shared/Navbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
@@ -8,8 +8,12 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { COMPANY_API_ENDPOINT } from "@/utils/constant";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import useGetCompanyById from "@/hooks/useGetCompanyById";
 
 const CompanySetup = () => {
+    const navigate = useNavigate();
+    const params = useParams();
     const [input, setInput] = useState({
         name: "",
         description: "",
@@ -18,7 +22,8 @@ const CompanySetup = () => {
         file: "",
     });
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
+    const {singleCompany} =useSelector((state)=>state.company);
+    useGetCompanyById(params.id);
 
     const changeEventHandler = (e) => {
         setInput({ ...input, [e.target.name]: e.target.value });
@@ -41,7 +46,7 @@ const CompanySetup = () => {
             formData.append("file", input.file);
         }
         try {
-            console.log("Hello")
+            setLoading(true);   
             const res = await axios.put(`${COMPANY_API_ENDPOINT}/update/${companyId}`, formData,
                 {
                     withCredentials: true,
@@ -59,9 +64,20 @@ const CompanySetup = () => {
         } catch (error) {
             console.log(error);
             toast.error("Something went wrong while updating company info");
-
+        }finally{
+            setLoading(false);
         }
     }
+
+    useEffect(()=>{
+        setInput({
+            name: singleCompany?.name || "",
+            description: singleCompany?.description|| "",
+            website: singleCompany?.website || "",
+            location: singleCompany?.location|| "",
+            file:  singleCompany?.file || "",
+        })
+    },[singleCompany])
 
     return (
         <div className="min-h-screen bg-gray-100">
