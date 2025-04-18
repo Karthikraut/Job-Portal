@@ -46,28 +46,36 @@ const CompanyCreate = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <div className="max-w-3xl mx-auto mt-20 bg-white p-10 rounded-2xl shadow-md">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 text-gray-800">Name Your Company</h1>
-          <p className="text-gray-500 text-lg">
+      <div className="max-w-3xl mx-auto mt-24 bg-white p-12 rounded-3xl shadow-lg">
+        <div className="mb-10">
+          <h1 className="text-4xl font-bold text-gray-800 mb-3">Name Your Company</h1>
+          <p className="text-lg text-gray-500">
             What would you like to name your company? Don’t worry — you can change this later.
           </p>
         </div>
 
-        <Label className="text-xl mb-2 block">Company Name</Label>
-        <Input
-          type="text"
-          className="text-xl py-4 px-6 h-14 mb-6"
-          placeholder="JobHunt, Microsoft etc."
-          value={companyName}
-          onChange={(e) => setCompanyName(e.target.value)}
-        />
+        <div className="mb-8">
+          <Label className="text-xl block mb-2">Company Name</Label>
+          <Input
+            type="text"
+            className="h-14 text-lg px-6"
+            placeholder="JobHunt, Microsoft etc."
+            value={companyName}
+            onChange={(e) => setCompanyName(e.target.value)}
+          />
+        </div>
 
         <div className="flex items-center gap-4">
           <Link to="/admin/companies">
-            <Button variant="outline" className="text-xl h-12 px-6">Cancel</Button>
+            <Button variant="outline" className="text-lg h-12 px-6">
+              Cancel
+            </Button>
           </Link>
-          <Button className="text-xl h-12 px-8" onClick={registerCompany} disabled={loading}>
+          <Button
+            className="text-lg h-12 px-8"
+            onClick={registerCompany}
+            disabled={loading}
+          >
             {loading ? "Creating..." : "Continue"}
           </Button>
         </div>

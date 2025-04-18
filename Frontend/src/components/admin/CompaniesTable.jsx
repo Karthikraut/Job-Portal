@@ -14,7 +14,7 @@ import { Edit2, MoreHorizontal } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-const CompaniesTable = ({ search = "" }) => {
+const CompaniesTable = ({ search }) => {
   const navigate = useNavigate();
   const { allCompanies } = useSelector((store) => store.company);
   const companies = allCompanies || [];
