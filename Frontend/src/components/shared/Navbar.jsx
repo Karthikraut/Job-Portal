@@ -12,6 +12,8 @@ import { USER_API_ENDPOINT } from "@/utils/constant";
 import { setUser } from "@/redux/authSlice";
 
 const Navbar = () => {
+    const fallbackProfile =
+        "https://i.pinimg.com/originals/5c/95/31/5c9531d05f919414e9dff0c974388f67.jpg";
     const user = useSelector((store) => store.auth.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -68,24 +70,39 @@ const Navbar = () => {
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <Avatar className="cursor-pointer w-12 h-12">
-                                        <AvatarImage src={user?.profile?.profilePhoto} />
+                                        <AvatarImage
+                                            src={
+                                                user?.profile?.profilePhoto?.trim()
+                                                    ? user.profile.profilePhoto
+                                                    : fallbackProfile
+                                            }
+                                        />
                                     </Avatar>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-80">
                                     <div className='p-4'>
                                         <div className='flex gap-3 items-center mb-4'>
                                             <Avatar className="w-16 h-16">
-                                                <AvatarImage src={user?.profile?.profilePhoto} />
+                                                <AvatarImage
+                                                    src={
+                                                        user?.profile?.profilePhoto?.trim()
+                                                            ? user.profile.profilePhoto
+                                                            : fallbackProfile
+                                                    }
+                                                />
                                             </Avatar>
                                             <div>
                                                 <h4 className='font-semibold text-lg'>{user.fullname}</h4>
                                                 <p className='text-base text-gray-500'>{user?.profile?.bio}</p>
                                             </div>
                                         </div>
-                                        <div className='flex items-center gap-3 cursor-pointer text-lg mb-3'>
-                                            <User2 className="w-5 h-5" />
-                                            <Button variant="link" className="text-lg"><Link to='/profile'>View Profile</Link></Button>
-                                        </div>
+                                        {
+                                            user.role == 'student' ?
+                                                <div className='flex items-center gap-3 cursor-pointer text-lg mb-3'>
+                                                    <User2 className="w-5 h-5" />
+                                                    <Button variant="link" className="text-lg"><Link to='/profile'>View Profile</Link></Button>
+                                                </div> : <></>
+                                        }
                                         <div className='flex items-center gap-3 cursor-pointer text-lg'>
                                             <LogOut className="w-5 h-5" />
                                             <Button onClick={logOutHandler} variant="link" className="text-lg">Logout</Button>
