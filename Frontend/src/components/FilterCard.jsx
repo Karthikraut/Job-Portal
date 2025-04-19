@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { RadioGroup, RadioGroupItem } from './ui/radio-group'
 import { Label } from './ui/label'
+import { useDispatch, useSelector } from 'react-redux'
+import { setSearchedQuery } from '@/redux/jobSlice'
 
 const fitlerData = [
     {
@@ -12,17 +14,22 @@ const fitlerData = [
         array: ["Frontend Developer", "Backend Developer", "FullStack Developer", "UI/UX Designer", "DevOps Engineer"]
     },
     {
-        fitlerType: "Salary",
-        array: ["0-40k", "42-1lakh", "1lakh to 5lakh", "5lakh to 10lakh", "10lakh+"]
-    },
+        fitlerType: "Default",
+        array: ["All"]
+    }
 ]
 
 const FilterCard = () => {
     const [selectedValue, setSelectedValue] = useState('');
+    const dispatch = useDispatch();
 
     const changeHandler = (value) => {
         setSelectedValue(value);
     }
+
+    useEffect(()=>{
+        dispatch(setSearchedQuery(selectedValue));
+    },[selectedValue])
 
     return (
         <div className='w-full bg-white p-5 rounded-xl shadow-lg'>
@@ -35,7 +42,7 @@ const FilterCard = () => {
                             <h1 className='font-semibold text-xl mb-3'>{data.fitlerType}</h1>
                             {
                                 data.array.map((item, idx) => {
-                                    const itemId = `id${index}-${idx}`
+                                    const itemId = `id${index}-${idx}` //any unique id
                                     return (
                                         <div key={itemId} className='flex items-center space-x-3 my-3'>
                                             <RadioGroupItem value={item} id={itemId} />
