@@ -8,6 +8,7 @@ import { Label } from './ui/label'
 import AppliedJobTable from './AppliedJobTable'
 import UpdateProfileDialog from './UpdateProfileDialog'
 import { useSelector } from 'react-redux'
+import useGetAppliedJobs from '@/hooks/useGetAppliedJobs'
 // import AppliedJobTable from './AppliedJobTable'
 // import UpdateProfileDialog from './UpdateProfileDialog'
 // import useGetAppliedJobs from '@/hooks/useGetAppliedJobs'
@@ -18,7 +19,9 @@ const isResume = true;
 const Profile = () => {
     const [open,setOpen] = React.useState(false);
     const user =useSelector((store) => store.auth.user);
-    // useGetAppliedJobs();
+    
+    useGetAppliedJobs();
+
     const userData = {
         fullname: user.fullname,
         email: user.email,
