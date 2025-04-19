@@ -15,13 +15,29 @@ import {
 } from '../ui/popover';
 import { MoreHorizontal } from 'lucide-react';
 import { useSelector } from 'react-redux';
+import axios from 'axios';
+import { toast } from 'sonner';
+import { APPLICATION_API_ENDPOINT } from '@/utils/constant';
 
 const ApplicantsTable = () => {
   const applicants = useSelector((state) => state.application.allApplicants) || [];
   const shortlistingStatus = ['Accepted', 'Rejected'];
 
-  const statusHandler = (status, id) => {
-    console.log(`Applicant ${id} marked as: ${status}`);
+  const statusHandler = async (status, id) => {
+    try {
+        console.log(`Applicant ${id} marked as: ${status}`);
+        // Here you would typically make an API call to update the status in your backend
+        const res =await axios.put(`${APPLICATION_API_ENDPOINT}/status/${id}/update`, { status }, { withCredentials: true });
+        console.log("Update response: ", res.data);
+        if (res.data.success) {
+            toast.success(res.data.message);
+        } else {
+            toast.error(res.data.message);
+        }
+    } catch (error) {
+        console.error("Error updating status:", error);
+        toast.error("Failed to update status. Please try again.");
+    }
   };
 
   return (
