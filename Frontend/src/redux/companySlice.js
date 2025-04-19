@@ -4,7 +4,7 @@ const companySlice = createSlice({
   name: 'company', 
   initialState:{
     singleCompany: null,
-    allCompanies: [],
+    allCompanies: [], //This are all companies that are created by the admin
   },
   reducers:{
     setSingleCompany:(state,action)=>{
@@ -12,7 +12,7 @@ const companySlice = createSlice({
     },
     setAllCompanies:(state,action)=>{
         state.allCompanies = action.payload;
-    },
+    }
   }
 })
 
