@@ -11,7 +11,7 @@ import applcationRoute from './routes/applicationRoutes.js'
 // Create an instance of an Express application
 const app = express();
 
-// Load environment variables from a .env file into process.env
+// Load environment variables from a .env file into process.env (Dot env file is used for Storing sensitive information like API keys, database URLs, etc. AND CONFIGURATION SETTINGS)
 dotenv.config();
 
 // Get the PORT value from environment variables

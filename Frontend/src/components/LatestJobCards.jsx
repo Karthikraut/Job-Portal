@@ -25,7 +25,7 @@ const LatestJobCards = ({job}) => {
                     {job.jobType}
                 </Badge>
                 <Badge className={'text-green-600 font-semibold text-lg px-5 py-2'} variant="ghost">
-                    {job.salary}{job.salary<100 ?<span>LPA</span>:<span>per month</span>}
+                    {job.salary}{job.salary<100 ?<span>LPA</span>:<span>pm</span>}
                 </Badge>
             </div>
         </div>

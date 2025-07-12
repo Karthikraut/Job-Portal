@@ -45,6 +45,8 @@ export const applyJob = async (req, res) => {
         console.log(error);
     }
 };
+//This is for user to see the jobs he has applied for
+// user dekhega kitne jobs apply kiye hai
 export const getAppliedJobs = async (req,res) => {
     try {
         const userId = req.id;
